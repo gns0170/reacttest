@@ -1,9 +1,8 @@
 import React, {useState} from 'react';
 
 
-
 function Main(){
-
+    var a = '';
     const [values,setValues] = useState({
         id : "",
         password : ""
@@ -11,9 +10,10 @@ function Main(){
 
     const handleSubmit = (e) =>{
         e.preventDefault();
-        fetch('',{
+        console.log(values);
+        fetch('http://localhost:4000/api',{
             method : 'POST',
-            body : JSON.stringify(values),
+            body : JSON.stringify({values}),
             headers:{
                 'Content-Type' : 'application/json'
             }
@@ -25,18 +25,30 @@ function Main(){
     const handleChange = (e)=>{
         setValues({
             ...values,
-            [e.target.id] : e.target.value
+            [e.target.name] : e.target.value
+        })
+    }
+
+    const Tester = (e) =>{
+        e.preventDefault();
+        fetch('http://localhost:4000/api',{method:'POST'})
+        .then (res=>res.json())
+        .then (data => {
+            a= data;
+            console.log(a);
         })
     }
 
     return(
         <>
-            <form method = "post"
+            <form action = "http://localhost:4000/api"method = "post"
             onSubmit = {handleSubmit}>
                 <input type = "text" name = "id" onChange = {handleChange} autoFocus/>
                 <input type = "password" name = "password" onChange = {handleChange}/>
                 <button>Go</button>
             </form>
+            <button onClick= {Tester}>Test</button>
+            {a}
         </>
     )
 }
