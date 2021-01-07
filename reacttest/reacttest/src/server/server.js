@@ -22,11 +22,30 @@ app.get('/', (req,res,next)=>{
     next();
 })
 
-app.use('/api',(req,res)=>{
-    a = req.body;
-    res.send(a);
-})
+/*
+const passport = require('passport');
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+var LocalStrategy = require('passport-local').Strategy;
+
+app.use(cookieParser('keyboard cat'));
+app.use(session({secret: 'keyboard cat'}));
+app.use(passport.initialize());
+app.use(passport.session());
+*/
+
+app.use('/api',(req,res,next)=>
+    
+    res.json('hi')
+
+);
+
+
+
 
 app.listen(4000,()=>{
     console.log('Success')
 })
+
+
+
