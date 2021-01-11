@@ -11,7 +11,7 @@ function Login(){
 
     const handleSubmit = (e) =>{
         e.preventDefault();
-        fetch('http://localhost:4000/api/register',{
+        fetch('http://localhost:4000/api/login',{
             method : 'POST',
             body : JSON.stringify({values}),
             headers:{
