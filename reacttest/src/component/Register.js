@@ -17,17 +17,17 @@ function Register(){
         console.log(values)
         fetch('http://localhost:4000/api/register',{
             method : 'POST',
-            body : JSON.stringify({values}),
+            body : JSON.stringify(values),
             headers:{
                 'Content-Type' : 'application/json'
             }
         }).then(res=>res.json())
         .then(data=>{
             console.log("Success : ",data);
-
+            
         })
         .catch(error=>console.error('Error:',error));
-
+        <Redirect to ="/login"/>
     }
 
     const handleChange = (e)=>{

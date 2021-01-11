@@ -6,6 +6,8 @@ const cors = require('cors')
 const fs = require('fs')
 
 const passport = require('passport')
+    ,LocalStrategy = require('passport-local').Strategy;
+
 
 const users = [];
 
@@ -15,24 +17,33 @@ app.use(cors({
 app.use(express.urlencoded({extended : false}))
 app.use(express.json())
 
+app.use(session({
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: true },
+
+  }))
+
 app.post('/api/register',(req,res)=>{
-    const id = new Date().toString()
+    const id = new Date().getTime()
     
-    console.log(req.body);
+    var data = `const id${id} = ${JSON.stringify(req.body)}`
+    users.push(req.body)
+    console.log(users)
+    fs.writeFile(`./data/users/${id}`, data, 'utf8', function(error){ console.log('write end') });
 
     res.json(id)
 })
 
-app.post('/login', 
-  passport.authenticate('local', { failureRedirect: '/login' }),
+app.post('/api/login', 
+  passport.authenticate('local'),
   function(req, res) {
-    res.redirect('/');
+    res.json(true)
   });
 
-app.post('/api/register',(req,res)=>{
 
-    res.send("hihihihihi")
-})
+
 
 app.post('/post',(req,res)=>{
     res.send("hi");
