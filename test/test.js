@@ -14,8 +14,11 @@ const users = [];
 app.use(cors({
     origin : 'http://localhost:3000'
 }))
+app.use(express.static("public"));
 app.use(express.urlencoded({extended : false}))
 app.use(express.json())
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use(session({
     secret: 'keyboard cat',
