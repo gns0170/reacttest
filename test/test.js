@@ -1,62 +1,71 @@
+//express 모듈
 const express = require('express')
 const app = express()
 const session = require('express-session')
-const cors = require('cors')
+const flash = require('connect-flash')
 
-const fs = require('fs')
-
+//nodejs 모듈
 const passport = require('passport')
-    ,LocalStrategy = require('passport-local').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
+const cors = require('cors')  
 
 
-const users = [];
-
+//express 기본
 app.use(cors({
     origin : 'http://localhost:3000'
 }))
 app.use(express.static("public"));
 app.use(express.urlencoded({extended : false}))
 app.use(express.json())
-app.use(passport.initialize());
-app.use(passport.session());
 
-app.use(session({
-    secret: 'keyboard cat',
-    resave: false,
-    saveUninitialized: false,
-    cookie: { secure: true },
+//로그인 세션
+app.use(session ({
+    name : "sessionID",
+    secret:"Hello",
+    resave:false,
+    saveUninitialized:true,
+    cookie:{
+        secure:false,
+        maxAge: 600*1000
+    }
+}))
 
-  }))
 
-app.post('/api/register',(req,res)=>{
-    const id = new Date().getTime()
-    
-    var data = `const id${id} = ${JSON.stringify(req.body)}`
-    users.push(req.body)
-    console.log(users)
-    fs.writeFile(`./data/users/${id}`, data, 'utf8', function(error){ console.log('write end') });
+//passport 관련
+app.use(passport.initialize())
+app.use(passport.session())
+require('./config/passport.js')(passport);
+app.use(flash())
 
-    res.json(id)
+//기능 분리 가져오기
+const aboutLogin = require('./routes/aboutLogin.js');
+
+//뷰 엔진
+app.set('view engine', 'ejs')
+
+//구현
+app.get('/',(req,res)=>{
+    res.render('html')
 })
 
-app.post('/api/login', 
-  passport.authenticate('local'),
-  function(req, res) {
-    res.json(true)
-  });
 
 
 
 
+app.use('/api',(req,res)=>
+  aboutLogin
+  );
+
+
+
+1
 app.post('/post',(req,res)=>{
     res.send("hi");
 })
 
-app.set('view engine', 'ejs')
 
-app.get('/',(req,res)=>{
-    res.render('html')
-})
+
+
 
 
 app.listen(4000,console.log('Success'))
